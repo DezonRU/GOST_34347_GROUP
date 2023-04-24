@@ -7,85 +7,55 @@ namespace GOST_55601
     {
         static void Main()
         {
-            //Вводим переменные Р - расчётное давление, Т - расчетная температура
-            double P, T;
-
-            //Для определения данных
-            string text;
-
-            //Вводим характеристики сред (взрывоопасная, токсичная, вакуум);
-            bool explosive, toxic, vacuum;
-
-
-            //Группа ГОСТа
-            int group_GOST;
-
-            //Вводим условия задачи
+            //Вызываем для определения группы сосуда
+            GOST_34347 fine_group = new GOST_34347();
 
             Console.WriteLine("Введите расчётное давление");
 
-            P = double.Parse(Console.ReadLine());
+            fine_group.P = double.Parse(Console.ReadLine());
 
             Console.WriteLine("Введите расчётную температуру");
 
-            T = double.Parse(Console.ReadLine());
+            fine_group.T = double.Parse(Console.ReadLine());
 
+            Console.WriteLine("Среда взрывоопасная/пожароопасная/токсичная? (+)");
 
-            Console.WriteLine("Среда взрывоопасная? (+)");
+            string explosive = Console.ReadLine();
 
-            text = Console.ReadLine();
-
-            if (text=="+") {
-                explosive = true;
-                toxic = true;
-                Console.WriteLine("Среда взрывоопасная");
+            // Если среда взрывоопасная/пожароопасная/токсичная, тогда задаем параметр true
+            if (explosive == "+")
+            {
+                fine_group.explosive = true;
             }
             else
             {
-                explosive = false;
-                toxic = false;
-                Console.WriteLine("Среда не взрывоопасная");
+                fine_group.explosive = false;
             }
 
-            Console.WriteLine("Расчётное давление: {0}, расчётная температура: {1} C,", P, T);
+            // Сосуд находится под вакуумом
 
-            if (explosive == true)
+            Console.WriteLine("Сосуд под вакуумом? (+)");
+
+            string vacuum = Console.ReadLine();
+
+            if (vacuum == "+")
             {
-                Console.WriteLine("Группа 1 по ГОСТ 34347-2017");
-            }
-            else if (explosive == false && 0.05 <= P && P <= 2.5 && T > 400)
-            {
-                Console.WriteLine("Группа 2.1 по ГОСТ 34347-2017");
-            }
-            else if (explosive == false && 2.5 < P && P >= 5 && T > 200)
-            {
-                Console.WriteLine("Группа 2.2 по ГОСТ 34347-2017");
-            }
-            else if (explosive == false && P > 5)
-            {
-                Console.WriteLine("Группа 2.3 по ГОСТ 34347-2017");
-            }
-            else if (explosive == false && 0.05 <= P && P >= 5 && T < -40)
-            {
-                Console.WriteLine("Группа 2.4 по ГОСТ 34347-2017");
-            }
-            else if (explosive == false && P >= 0.05 && P <= 2.5 && T > -40 && T <= 400)
-            {
-                Console.WriteLine("Группа 3.1 ГОСТ 34347-2017");
-            }
-            else if (explosive == false && P > 2.5 && P < 5 && T > -40 && T < 200)
-            {
-                Console.WriteLine("Группа 3.2 ГОСТ 34347-2017");
-            }
-            else if (explosive == false && P > 0.05 && P <= 1.6 && T > -20 && T < 200)
-            {
-                Console.WriteLine("Группа 4 ГОСТ 34347-2017");
+                fine_group.vacuum = true;
             }
             else
             {
-                Console.WriteLine("Не определил группу");
+                fine_group.vacuum = false;
             }
 
+            // Выводим данные задачи
+            Console.WriteLine("Расчётное давление {0} МПа, расчётная температура {1} C, токсичная: {2}, вакуум: {3}", fine_group.P, fine_group.T, fine_group.explosive, fine_group.vacuum);
+
+            // Вызываем класс для определения группы аппарата по ГОСТ 34347-2017
+            fine_group.fine_group();
+
+            fine_group.class_accuracy_GOST_R55601();
+            
+            Console.ReadLine();
 
         }
     }
