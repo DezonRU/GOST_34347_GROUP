@@ -17,5 +17,6 @@ namespace GOST_55601
        // public int group;
         //Класс точности
         public int class_accuracy;
+        public string vesion = "v.0.1 от 25.04.2023";
     }
 }
